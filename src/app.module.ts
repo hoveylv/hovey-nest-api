@@ -1,26 +1,43 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { ConfigModule } from '@nestjs/config'
 import { AppController } from './app.controller'
+import { AppDummy } from './app.dummy'
+import { AppJapanService } from './app.japan.service'
 import { AppService } from './app.service'
-import { Event } from './events/entities/event.entity'
+
 import { EventsModule } from './events/events.module'
+import ormConfig from './config/orm.config'
+import ormConfigProd from './config/orm.config.prod'
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'Bjhg8888',
-      database: 'nest-events',
-      entities: [Event],
-      synchronize: true,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [ormConfig],
+      expandVariables: true,
     }),
-
+    TypeOrmModule.forRootAsync({
+      useFactory: process.env.NODE_ENV !== 'production' ? ormConfig : ormConfigProd,
+    }),
     EventsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: AppService,
+      useClass: AppJapanService,
+    },
+    {
+      provide: 'APP_NAME',
+      useValue: 'Nest Events Backend',
+    },
+    {
+      provide: 'MESSAGE',
+      inject: [AppDummy],
+      useFactory: app => `${app.dummy()} Factory`,
+    },
+    AppDummy,
+  ],
 })
 export class AppModule {}
