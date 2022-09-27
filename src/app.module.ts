@@ -2,8 +2,6 @@ import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule } from '@nestjs/config'
 import { AppController } from './app.controller'
-import { AppDummy } from './app.dummy'
-import { AppJapanService } from './app.japan.service'
 import { AppService } from './app.service'
 
 import { EventsModule } from './events/events.module'
@@ -23,21 +21,6 @@ import ormConfigProd from './config/orm.config.prod'
     EventsModule,
   ],
   controllers: [AppController],
-  providers: [
-    {
-      provide: AppService,
-      useClass: AppJapanService,
-    },
-    {
-      provide: 'APP_NAME',
-      useValue: 'Nest Events Backend',
-    },
-    {
-      provide: 'MESSAGE',
-      inject: [AppDummy],
-      useFactory: app => `${app.dummy()} Factory`,
-    },
-    AppDummy,
-  ],
+  providers: [AppService],
 })
 export class AppModule {}
