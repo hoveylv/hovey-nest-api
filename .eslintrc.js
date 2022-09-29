@@ -4,4 +4,7 @@ module.exports = {
   env: {
     jest: true,
   },
+  rules: {
+    eqeqeq: 'off',
+  },
 }
