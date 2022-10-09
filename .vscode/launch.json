@@ -5,15 +5,17 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug Nestjs Launch Program",
       "type": "node",
       "request": "launch",
-      "args": ["${workspaceRoot}/src/main.ts"],
-      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
-      "sourceMaps": true,
-      "cwd": "${workspaceRoot}",
+      "name": "Launch via NPM",
+      "runtimeArgs": ["run-script", "start"],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**"
+        // "!**/node_modules/**"
+      ],
+      "runtimeExecutable": "pnpm",
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }
